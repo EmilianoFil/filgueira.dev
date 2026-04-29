@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Filgueira.dev — Soluciones web a medida</title>
+  <meta name="description" content="Desarrollo web a medida. Te escucho, entiendo tu negocio y construimos exactamente eso. Sin vueltas, sin jerga, sin sorpresas." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #E24B4A;
+      --red-dk: #A32D2D;
+      --red-lt: #F7C1C1;
+      --red-xlt: #FCEBEB;
+      --black: #1A1A1A;
+      --gray-dk: #2C2C2A;
+      --gray: #888780;
+      --gray-lt: #D3D1C7;
+      --warm: #F1EFE8;
+      --white: #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CUSTOM CURSOR */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--red);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(226,75,74,0.4);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.35s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s, padding 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(26,26,26,0.92);
+      backdrop-filter: blur(12px);
+      padding: 14px 48px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo svg { height: 32px; width: auto; }
+    .nav-logo svg path, .nav-logo svg text { fill: var(--white) !important; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 13px; font-weight: 400; color: var(--gray-lt);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      font-size: 13px; font-weight: 500;
+      background: var(--red); color: var(--white);
+      padding: 9px 20px; border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .nav-cta:hover { background: var(--red-dk); transform: translateY(-1px); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+    }
+    .hero-circle {
+      position: absolute; border-radius: 50%;
+      border: 60px solid var(--red);
+      opacity: 0.045;
+    }
+    .hero-circle-1 { width: 700px; height: 700px; top: -200px; right: -200px; }
+    .hero-circle-2 { width: 400px; height: 400px; bottom: -100px; left: -100px; border-width: 40px; opacity: 0.03; }
+    .hero-grain {
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+    }
+
+    .hero-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.2em;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+    }
+    .hero-title {
+      font-size: clamp(52px, 7vw, 96px);
+      font-weight: 500; line-height: 1.02;
+      letter-spacing: -0.03em;
+      max-width: 820px;
+      opacity: 0; animation: fadeUp 0.8s 0.35s forwards;
+    }
+    .hero-title em { color: var(--red); font-style: normal; }
+    .hero-subtitle {
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 300; color: var(--gray-lt);
+      line-height: 1.7; max-width: 520px;
+      margin-top: 28px;
+      opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 16px; margin-top: 48px; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.8s 0.65s forwards;
+    }
+    .btn-primary {
+      background: var(--red); color: var(--white);
+      padding: 14px 28px; border-radius: 8px;
+      font-size: 15px; font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: var(--red-dk); transform: translateY(-2px); }
+    .btn-secondary {
+      background: transparent; color: var(--gray-lt);
+      padding: 14px 28px; border-radius: 8px;
+      font-size: 15px; font-weight: 400;
+      text-decoration: none; border: 0.5px solid rgba(255,255,255,0.15);
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.35); color: var(--white); transform: translateY(-2px); }
+
+    .hero-scroll {
+      position: absolute; bottom: 40px; left: 48px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 11px; letter-spacing: 0.15em; color: var(--gray);
+      text-transform: uppercase;
+      opacity: 0; animation: fadeUp 1s 1s forwards;
+    }
+    .hero-scroll-line {
+      width: 40px; height: 1px; background: var(--gray);
+    }
+
+    /* SECTION COMMONS */
+    section { padding: 100px 48px; }
+    .section-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.2em;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 500; line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    /* SERVICIOS */
+    #servicios { background: var(--black); }
+    .servicios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      margin-top: 60px;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .servicio-card {
+      padding: 40px 36px;
+      background: rgba(255,255,255,0.02);
+      border-right: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .servicio-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: var(--red);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .servicio-card:hover { background: rgba(226,75,74,0.04); }
+    .servicio-card:hover::before { transform: scaleX(1); }
+    .servicio-num {
+      font-size: 11px; letter-spacing: 0.15em; color: var(--red);
+      margin-bottom: 20px; font-weight: 500;
+    }
+    .servicio-icon {
+      width: 40px; height: 40px; margin-bottom: 20px;
+      opacity: 0.7;
+    }
+    .servicio-name {
+      font-size: 20px; font-weight: 500;
+      margin-bottom: 12px; color: var(--white);
+    }
+    .servicio-desc {
+      font-size: 14px; font-weight: 300;
+      color: var(--gray); line-height: 1.7;
+    }
+    .servicio-tags {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px;
+    }
+    .tag {
+      font-size: 11px; padding: 4px 10px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      color: var(--gray-lt); letter-spacing: 0.04em;
+    }
+
+    /* SOBRE MI */
+    #sobre { background: var(--gray-dk); }
+    .sobre-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .sobre-text .section-title { margin-bottom: 28px; }
+    .sobre-body {
+      font-size: 16px; font-weight: 300; color: var(--gray-lt);
+      line-height: 1.8; margin-bottom: 20px;
+    }
+    .sobre-body strong { color: var(--white); font-weight: 500; }
+    .sobre-pillars {
+      display: flex; flex-direction: column; gap: 16px;
+      margin-top: 36px;
+    }
+    .pillar {
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .pillar-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--red); flex-shrink: 0; margin-top: 8px;
+    }
+    .pillar-text { font-size: 14px; color: var(--gray-lt); line-height: 1.6; }
+    .pillar-text strong { color: var(--white); display: block; font-weight: 500; margin-bottom: 2px; }
+
+    .sobre-visual {
+      position: relative;
+    }
+    .sobre-card {
+      background: var(--black);
+      border-radius: 16px; padding: 40px;
+      border: 0.5px solid rgba(255,255,255,0.08);
+    }
+    .sobre-card-label {
+      font-size: 11px; letter-spacing: 0.15em; color: var(--red);
+      text-transform: uppercase; margin-bottom: 24px;
+    }
+    .sobre-stat {
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.07);
+    }
+    .sobre-stat:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .sobre-stat-num {
+      font-size: 48px; font-weight: 500; color: var(--white);
+      letter-spacing: -0.03em; line-height: 1;
+    }
+    .sobre-stat-num span { color: var(--red); }
+    .sobre-stat-label { font-size: 13px; color: var(--gray); margin-top: 6px; }
+
+    /* PORTFOLIO PLACEHOLDER */
+    #portfolio { background: var(--black); }
+    .portfolio-coming {
+      margin-top: 60px;
+      border: 0.5px dashed rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 80px 40px;
+      text-align: center;
+    }
+    .portfolio-coming-icon {
+      width: 48px; height: 48px; margin: 0 auto 20px;
+      opacity: 0.3;
+    }
+    .portfolio-coming p {
+      font-size: 15px; color: var(--gray); font-weight: 300;
+    }
+    .portfolio-coming p strong { color: var(--gray-lt); font-weight: 500; }
+
+    /* CONTACTO */
+    #contacto { background: var(--gray-dk); }
+    .contacto-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; margin-top: 60px;
+    }
+    .contacto-info .seccion-body {
+      font-size: 16px; font-weight: 300; color: var(--gray-lt);
+      line-height: 1.8; margin-bottom: 36px;
+    }
+    .contacto-links { display: flex; flex-direction: column; gap: 16px; }
+    .contacto-link {
+      display: flex; align-items: center; gap: 14px;
+      text-decoration: none;
+      padding: 16px 20px;
+      border-radius: 10px;
+      border: 0.5px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+    .contacto-link:hover {
+      background: rgba(226,75,74,0.06);
+      border-color: rgba(226,75,74,0.3);
+      transform: translateX(4px);
+    }
+    .contacto-link-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(226,75,74,0.15);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .contacto-link-icon svg { width: 18px; height: 18px; }
+    .contacto-link-label { font-size: 11px; color: var(--gray); letter-spacing: 0.08em; text-transform: uppercase; }
+    .contacto-link-val { font-size: 14px; color: var(--white); font-weight: 400; margin-top: 2px; }
+
+    /* FORM */
+    .contacto-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label {
+      font-size: 12px; color: var(--gray); letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .form-group input,
+    .form-group textarea {
+      background: rgba(255,255,255,0.04);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 14px; font-family: 'DM Sans', sans-serif;
+      color: var(--white);
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+      resize: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--red);
+      background: rgba(226,75,74,0.04);
+    }
+    .form-group textarea { min-height: 120px; }
+    .form-submit {
+      background: var(--red); color: var(--white);
+      padding: 14px 28px; border-radius: 8px;
+      font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+      border: none; cursor: none;
+      transition: background 0.2s, transform 0.15s;
+      text-align: center;
+    }
+    .form-submit:hover { background: var(--red-dk); transform: translateY(-2px); }
+    .form-success {
+      display: none; padding: 16px 20px;
+      background: rgba(226,75,74,0.08);
+      border: 0.5px solid rgba(226,75,74,0.3);
+      border-radius: 8px;
+      font-size: 14px; color: var(--red-lt);
+      text-align: center;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      border-top: 0.5px solid rgba(255,255,255,0.07);
+      padding: 40px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    footer svg { height: 28px; width: auto; }
+    footer svg path, footer svg text { fill: var(--white) !important; }
+    .footer-copy { font-size: 12px; color: var(--gray); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 12px; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--white); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      nav.scrolled { padding: 12px 24px; }
+      .nav-links, .nav-cta { display: none; }
+      section { padding: 72px 24px; }
+      #hero { padding: 100px 24px 60px; }
+      .hero-scroll { left: 24px; }
+      .sobre-inner, .contacto-inner { grid-template-columns: 1fr; gap: 48px; }
+      footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">
+      <svg width="520" height="116" viewBox="0 0 520 116" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="56,8 98,32 98,80 56,104 14,80 14,32" fill="#E24B4A"/>
+        <path d="M66.258 45.65H51.124V54.022H64.924V59.082H51.124V71.41H45.742V40.59H66.258Z" fill="#FFFFFF"/>
+        <path d="M148.312 48.88H131.204V58.344H146.804V64.064H131.204V78H125.12V43.16H148.312Z" fill="#FFFFFF"/>
+        <path d="M155.852 41.08Q157.412 41.08 158.452 42.12Q159.492 43.16 159.492 44.72Q159.492 46.28 158.452 47.32Q157.412 48.36 155.852 48.36Q154.292 48.36 153.252 47.32Q152.212 46.28 152.212 44.72Q152.212 43.16 153.252 42.12Q154.292 41.08 155.852 41.08ZM152.992 53.04H158.712V78H152.992Z" fill="#FFFFFF"/>
+        <path d="M169.632 43.16V78H163.912V43.16Z" fill="#FFFFFF"/>
+        <path d="M193.552 65.78V62.4H199.272V76.18Q199.272 78.832 198.284 81.172Q197.296 83.512 195.58 85.228Q193.864 86.944 191.55 87.932Q189.236 88.92 186.532 88.92Q184.244 88.92 182.19 88.192Q180.136 87.464 178.498 86.138Q176.86 84.812 175.716 82.992Q174.572 81.172 174.104 79.04H180.136Q180.968 80.912 182.658 82.056Q184.348 83.2 186.532 83.2Q187.988 83.2 189.262 82.68Q190.536 82.16 191.472 81.276Q192.408 80.392 192.954 79.144Q193.5 77.896 193.552 76.492Q190.484 78.52 186.532 78.52Q183.88 78.52 181.54 77.532Q179.2 76.544 177.484 74.828Q175.768 73.112 174.78 70.772Q173.792 68.432 173.792 65.78Q173.792 63.076 174.78 60.762Q175.768 58.448 177.484 56.732Q179.2 55.016 181.54 54.028Q183.88 53.04 186.532 53.04H199.272V58.76H186.532Q185.076 58.76 183.802 59.306Q182.528 59.852 181.566 60.788Q180.604 61.724 180.058 62.998Q179.512 64.272 179.512 65.78Q179.512 67.236 180.058 68.536Q180.604 69.836 181.566 70.772Q182.528 71.708 183.802 72.254Q185.076 72.8 186.532 72.8Q188.04 72.8 189.314 72.254Q190.588 71.708 191.524 70.772Q192.46 69.836 193.006 68.536Q193.552 67.236 193.552 65.78Z" fill="#FFFFFF"/>
+        <path d="M216.172 73.06Q218.824 73.06 220.462 71.448Q222.1 69.836 222.1 67.184V53.04H227.82V66.976Q227.82 69.628 226.988 71.76Q226.156 73.892 224.648 75.4Q223.14 76.908 220.982 77.714Q218.824 78.52 216.172 78.52Q213.52 78.52 211.362 77.714Q209.204 76.908 207.67 75.4Q206.136 73.892 205.304 71.76Q204.472 69.628 204.472 66.976V53.04H210.192V67.184Q210.192 69.836 211.856 71.448Q213.52 73.06 216.172 73.06Z" fill="#FFFFFF"/>
+        <path d="M231.98 65.52Q231.98 62.712 232.942 60.32Q233.904 57.928 235.62 56.186Q237.336 54.444 239.702 53.482Q242.068 52.52 244.876 52.52Q247.684 52.52 250.05 53.482Q252.416 54.444 254.132 56.186Q255.848 57.928 256.81 60.32Q257.772 62.712 257.772 65.52Q257.772 65.884 257.746 66.222Q257.72 66.56 257.616 67.08H237.804Q238.272 69.732 240.118 71.266Q241.964 72.8 244.876 72.8Q246.852 72.8 248.386 72.072Q249.92 71.344 250.856 69.94H257.096Q256.472 71.916 255.328 73.502Q254.184 75.088 252.598 76.206Q251.012 77.324 249.062 77.922Q247.112 78.52 244.876 78.52Q242.068 78.52 239.702 77.558Q237.336 76.596 235.62 74.88Q233.904 73.164 232.942 70.772Q231.98 68.38 231.98 65.52ZM251.688 62.92Q250.96 60.736 249.192 59.488Q247.424 58.24 244.876 58.24Q242.276 58.24 240.508 59.488Q238.74 60.736 238.064 62.92Z" fill="#FFFFFF"/>
+        <path d="M264.792 41.08Q266.352 41.08 267.392 42.12Q268.432 43.16 268.432 44.72Q268.432 46.28 267.392 47.32Q266.352 48.36 264.792 48.36Q263.232 48.36 262.192 47.32Q261.152 46.28 261.152 44.72Q261.152 43.16 262.192 42.12Q263.232 41.08 264.792 41.08ZM261.932 53.04H267.652V78H261.932Z" fill="#FFFFFF"/>
+        <path d="M284.552 58.24Q281.796 58.24 280.184 59.748Q278.572 61.256 278.572 63.856V78H272.852V64.064Q272.852 61.412 273.684 59.28Q274.516 57.148 276.05 55.64Q277.584 54.132 279.742 53.326Q281.9 52.52 284.552 52.52Z" fill="#FFFFFF"/>
+        <path d="M306.912 65.78V62.4H312.632V69.264Q312.632 70.928 313.594 71.864Q314.556 72.8 316.272 72.8V78.52Q313.88 78.52 311.93 77.584Q309.98 76.648 308.784 74.984Q307.068 76.648 304.806 77.584Q302.544 78.52 299.892 78.52Q297.24 78.52 294.9 77.532Q292.56 76.544 290.844 74.828Q289.128 73.112 288.14 70.772Q287.152 68.432 287.152 65.78Q287.152 63.076 288.14 60.762Q289.128 58.448 290.844 56.732Q292.56 55.016 294.9 54.028Q297.24 53.04 299.892 53.04H312.632V58.76H299.892Q298.436 58.76 297.162 59.306Q295.888 59.852 294.926 60.788Q293.964 61.724 293.418 62.998Q292.872 64.272 292.872 65.78Q292.872 67.236 293.418 68.536Q293.964 69.836 294.926 70.772Q295.888 71.708 297.162 72.254Q298.436 72.8 299.892 72.8Q301.4 72.8 302.674 72.254Q303.948 71.708 304.884 70.772Q305.82 69.836 306.366 68.536Q306.912 67.236 306.912 65.78Z" fill="#FFFFFF"/>
+        <path d="M322.512 71.24Q324.072 71.24 325.112 72.28Q326.152 73.32 326.152 74.88Q326.152 76.44 325.112 77.48Q324.072 78.52 322.512 78.52Q320.952 78.52 319.912 77.48Q318.872 76.44 318.872 74.88Q318.872 73.32 319.912 72.28Q320.952 71.24 322.512 71.24Z" fill="#E24B4A"/>
+        <path d="M349.552 43.16H355.272V68.64H349.552V65.26Q349.552 63.752 349.006 62.478Q348.46 61.204 347.524 60.268Q346.588 59.332 345.314 58.786Q344.04 58.24 342.532 58.24Q341.076 58.24 339.802 58.786Q338.528 59.332 337.566 60.268Q336.604 61.204 336.058 62.478Q335.512 63.752 335.512 65.26Q335.512 66.716 336.058 68.016Q336.604 69.316 337.566 70.252Q338.528 71.188 339.802 71.734Q341.076 72.28 342.532 72.28H355.272V78H342.532Q339.88 78 337.54 77.012Q335.2 76.024 333.484 74.308Q331.768 72.592 330.78 70.278Q329.792 67.964 329.792 65.26Q329.792 62.608 330.754 60.268Q331.716 57.928 333.354 56.212Q334.992 54.496 337.254 53.508Q339.516 52.52 342.064 52.52Q344.248 52.52 346.12 53.196Q347.992 53.872 349.552 55.068Z" fill="#E24B4A"/>
+        <path d="M359.432 65.52Q359.432 62.712 360.394 60.32Q361.356 57.928 363.072 56.186Q364.788 54.444 367.154 53.482Q369.52 52.52 372.328 52.52Q375.136 52.52 377.502 53.482Q379.868 54.444 381.584 56.186Q383.3 57.928 384.262 60.32Q385.224 62.712 385.224 65.52Q385.224 65.884 385.198 66.222Q385.172 66.56 385.068 67.08H365.256Q365.724 69.732 367.57 71.266Q369.416 72.8 372.328 72.8Q374.304 72.8 375.838 72.072Q377.372 71.344 378.308 69.94H384.548Q383.924 71.916 382.78 73.502Q381.636 75.088 380.05 76.206Q378.464 77.324 376.514 77.922Q374.564 78.52 372.328 78.52Q369.52 78.52 367.154 77.558Q364.788 76.596 363.072 74.88Q361.356 73.164 360.394 70.772Q359.432 68.38 359.432 65.52ZM379.14 62.92Q378.412 60.736 376.644 59.488Q374.876 58.24 372.328 58.24Q369.728 58.24 367.96 59.488Q366.192 60.736 365.516 62.92Z" fill="#E24B4A"/>
+        <path d="M393.544 53.04L400.72 70.2L407.896 53.04H414.136L403.268 78H398.172L387.304 53.04Z" fill="#E24B4A"/>
+      </svg>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#sobre">Sobre mí</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <a href="#contacto" class="nav-cta">Hablemos →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg">
+      <div class="hero-circle hero-circle-1"></div>
+      <div class="hero-circle hero-circle-2"></div>
+      <div class="hero-grain"></div>
+    </div>
+    <div class="hero-label">Desarrollo web · Buenos Aires</div>
+    <h1 class="hero-title">Tu web, <em>tuya.</em><br>Sin vueltas.</h1>
+    <p class="hero-subtitle">Escucho lo que necesitás, entiendo tu negocio y construimos exactamente eso. Sin jerga, sin paquetes enlatados, sin sorpresas.</p>
+    <div class="hero-actions">
+      <a href="#contacto" class="btn-primary">Contame qué necesitás →</a>
+      <a href="#servicios" class="btn-secondary">Ver servicios</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section id="servicios">
+    <div class="section-label reveal">02 — Servicios</div>
+    <h2 class="section-title reveal">Lo que construimos<br>juntos.</h2>
+    <div class="servicios-grid">
+
+      <div class="servicio-card reveal">
+        <div class="servicio-num">01</div>
+        <div class="servicio-name">Sitios web y landing pages</div>
+        <p class="servicio-desc">Presencia digital clara, rápida y con identidad propia. Diseño a medida, sin templates genéricos.</p>
+        <div class="servicio-tags">
+          <span class="tag">HTML / CSS</span>
+          <span class="tag">React</span>
+          <span class="tag">Vercel</span>
+        </div>
+      </div>
+
+      <div class="servicio-card reveal">
+        <div class="servicio-num">02</div>
+        <div class="servicio-name">Aplicaciones web a medida</div>
+        <p class="servicio-desc">Sistemas internos, paneles de gestión, dashboards. Si tu negocio necesita algo específico, lo construimos.</p>
+        <div class="servicio-tags">
+          <span class="tag">Firebase</span>
+          <span class="tag">React</span>
+          <span class="tag">Node.js</span>
+        </div>
+      </div>
+
+      <div class="servicio-card reveal">
+        <div class="servicio-num">03</div>
+        <div class="servicio-name">E-commerce</div>
+        <p class="servicio-desc">Tiendas que venden. Integración con medios de pago locales, gestión de productos y pedidos.</p>
+        <div class="servicio-tags">
+          <span class="tag">MercadoPago</span>
+          <span class="tag">Shopify</span>
+          <span class="tag">WooCommerce</span>
+        </div>
+      </div>
+
+      <div class="servicio-card reveal">
+        <div class="servicio-num">04</div>
+        <div class="servicio-name">Consultoría y estrategia digital</div>
+        <p class="servicio-desc">¿No sabés por dónde empezar? Me senté con vos, entendemos el problema y definimos el camino.</p>
+        <div class="servicio-tags">
+          <span class="tag">Relevamiento</span>
+          <span class="tag">Arquitectura</span>
+          <span class="tag">Roadmap</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SOBRE MI -->
+  <section id="sobre">
+    <div class="sobre-inner">
+      <div class="sobre-text">
+        <div class="section-label reveal">03 — Sobre mí</div>
+        <h2 class="section-title reveal">Una persona,<br>no una agencia.</h2>
+        <p class="sobre-body reveal">Soy <strong>Emiliano Filgueira</strong>, desarrollador web basado en Buenos Aires. Trabajo con clientes que necesitan soluciones reales, no paquetes enlatados ni promesas de agencia grande.</p>
+        <p class="sobre-body reveal">Hablás conmigo desde el día uno hasta el deploy. Sin intermediarios, sin sorpresas en el precio, sin humo tech.</p>
+        <div class="sobre-pillars">
+          <div class="pillar reveal">
+            <div class="pillar-dot"></div>
+            <div class="pillar-text"><strong>A medida, siempre</strong>La complejidad la pone el cliente. Yo la traduzco en código limpio y soluciones que funcionan.</div>
+          </div>
+          <div class="pillar reveal">
+            <div class="pillar-dot"></div>
+            <div class="pillar-text"><strong>Nexo real</strong>Soy el puente entre lo que tu negocio necesita y la tecnología que lo hace posible.</div>
+          </div>
+          <div class="pillar reveal">
+            <div class="pillar-dot"></div>
+            <div class="pillar-text"><strong>Claridad antes que jerga</strong>Te explico qué hacemos, por qué y cuánto cuesta. Sin rodeos.</div>
+          </div>
+        </div>
+      </div>
+      <div class="sobre-visual reveal">
+        <div class="sobre-card">
+          <div class="sobre-card-label">En números</div>
+          <div class="sobre-stat">
+            <div class="sobre-stat-num">+5<span>años</span></div>
+            <div class="sobre-stat-label">en desarrollo web</div>
+          </div>
+          <div class="sobre-stat">
+            <div class="sobre-stat-num">100<span>%</span></div>
+            <div class="sobre-stat-label">proyectos entregados a tiempo</div>
+          </div>
+          <div class="sobre-stat">
+            <div class="sobre-stat-num">1<span>persona</span></div>
+            <div class="sobre-stat-label">con quien hablás siempre</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <div class="section-label reveal">05 — Contacto</div>
+    <h2 class="section-title reveal">¿Tenés un proyecto<br>en mente? Hablemos.</h2>
+    <div class="contacto-inner">
+      <div class="contacto-info">
+        <p class="seccion-body reveal" style="font-size:16px;font-weight:300;color:var(--gray-lt);line-height:1.8;margin-bottom:36px;">Contame qué necesitás. Lo demás corre por mi cuenta.</p>
+        <div class="contacto-links">
+          <a href="mailto:hola@filgueira.dev" class="contacto-link reveal">
+            <div class="contacto-link-icon">
+              <svg fill="none" stroke="#E24B4A" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+            </div>
+            <div>
+              <div class="contacto-link-label">Email</div>
+              <div class="contacto-link-val">hola@filgueira.dev</div>
+            </div>
+          </a>
+          <a href="https://wa.me/5491100000000" target="_blank" class="contacto-link reveal">
+            <div class="contacto-link-icon">
+              <svg fill="#E24B4A" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+            <div>
+              <div class="contacto-link-label">WhatsApp</div>
+              <div class="contacto-link-val">Escribime directo</div>
+            </div>
+          </a>
+          <a href="https://linkedin.com/in/filgueira" target="_blank" class="contacto-link reveal">
+            <div class="contacto-link-icon">
+              <svg fill="#E24B4A" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </div>
+            <div>
+              <div class="contacto-link-label">LinkedIn</div>
+              <div class="contacto-link-val">@filgueira.dev</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="contacto-form" id="contactForm">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" placeholder="¿Cómo te llamás?" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="tu@email.com" />
+          </div>
+          <div class="form-group">
+            <label for="mensaje">¿En qué puedo ayudarte?</label>
+            <textarea id="mensaje" placeholder="Contame de qué se trata el proyecto..."></textarea>
+          </div>
+          <button class="form-submit" onclick="handleSubmit()">Enviar mensaje →</button>
+          <div class="form-success" id="formSuccess">✓ Mensaje enviado. Te respondo en menos de 24hs.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <svg width="520" height="116" viewBox="0 0 520 116" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="56,8 98,32 98,80 56,104 14,80 14,32" fill="#E24B4A"/>
+      <path d="M66.258 45.65H51.124V54.022H64.924V59.082H51.124V71.41H45.742V40.59H66.258Z" fill="#FFFFFF"/>
+      <path d="M148.312 48.88H131.204V58.344H146.804V64.064H131.204V78H125.12V43.16H148.312Z" fill="#FFFFFF"/>
+      <path d="M322.512 71.24Q324.072 71.24 325.112 72.28Q326.152 73.32 326.152 74.88Q326.152 76.44 325.112 77.48Q324.072 78.52 322.512 78.52Q320.952 78.52 319.912 77.48Q318.872 76.44 318.872 74.88Q318.872 73.32 319.912 72.28Q320.952 71.24 322.512 71.24Z" fill="#E24B4A"/>
+      <path d="M349.552 43.16H355.272V68.64H349.552V65.26Q349.552 63.752 349.006 62.478Q348.46 61.204 347.524 60.268Q346.588 59.332 345.314 58.786Q344.04 58.24 342.532 58.24Q341.076 58.24 339.802 58.786Q338.528 59.332 337.566 60.268Q336.604 61.204 336.058 62.478Q335.512 63.752 335.512 65.26Q335.512 66.716 336.058 68.016Q336.604 69.316 337.566 70.252Q338.528 71.188 339.802 71.734Q341.076 72.28 342.532 72.28H355.272V78H342.532Q339.88 78 337.54 77.012Q335.2 76.024 333.484 74.308Q331.768 72.592 330.78 70.278Q329.792 67.964 329.792 65.26Q329.792 62.608 330.754 60.268Q331.716 57.928 333.354 56.212Q334.992 54.496 337.254 53.508Q339.516 52.52 342.064 52.52Q344.248 52.52 346.12 53.196Q347.992 53.872 349.552 55.068Z" fill="#E24B4A"/>
+      <path d="M393.544 53.04L400.72 70.2L407.896 53.04H414.136L403.268 78H398.172L387.304 53.04Z" fill="#E24B4A"/>
+    </svg>
+    <div class="footer-copy">© 2025 Filgueira.dev · Buenos Aires</div>
+    <div class="footer-links">
+      <a href="mailto:hola@filgueira.dev">hola@filgueira.dev</a>
+      <a href="#hero">↑ Volver arriba</a>
+    </div>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+    function animRing() {
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx+'px'; ring.style.top = ry+'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+    document.querySelectorAll('a, button, .servicio-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2.5)'; ring.style.borderColor = 'rgba(226,75,74,0.6)'; });
+      el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'rgba(226,75,74,0.4)'; });
+    });
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); });
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), 80);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Form
+    function handleSubmit() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const mensaje = document.getElementById('mensaje').value.trim();
+      if (!nombre || !email || !mensaje) { alert('Completá todos los campos.'); return; }
+      // En producción: conectar con Resend/Formspree/EmailJS
+      document.getElementById('contactForm').style.opacity = '0.4';
+      document.getElementById('contactForm').style.pointerEvents = 'none';
+      document.getElementById('formSuccess').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
