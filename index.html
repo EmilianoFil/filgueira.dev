@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -32,9 +31,10 @@
       background: var(--black);
       color: var(--white);
       overflow-x: hidden;
+      cursor: none;
     }
 
-    /* CUSTOM CURSOR — desktop only */
+    /* CUSTOM CURSOR */
     .cursor {
       width: 10px; height: 10px;
       background: var(--red);
@@ -45,7 +45,6 @@
       z-index: 9999;
       transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
       transform: translate(-50%, -50%);
-      display: none;
     }
     .cursor-ring {
       width: 36px; height: 36px;
@@ -57,12 +56,8 @@
       z-index: 9998;
       transition: transform 0.35s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s;
       transform: translate(-50%, -50%);
-      display: none;
     }
-    @media (hover: hover) and (pointer: fine) {
-      body { cursor: none; }
-      .cursor, .cursor-ring { display: block; }
-    }
+    body:hover .cursor { opacity: 1; }
 
     /* NAV */
     nav {
@@ -376,7 +371,7 @@
       background: var(--red); color: var(--white);
       padding: 14px 28px; border-radius: 8px;
       font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif;
-      border: none; cursor: pointer;
+      border: none; cursor: none;
       transition: background 0.2s, transform 0.15s;
       text-align: center;
     }
@@ -406,6 +401,12 @@
     .footer-links a:hover { color: var(--white); }
 
     /* ANIMATIONS */
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -563,7 +564,7 @@
         <div class="sobre-card">
           <div class="sobre-card-label">En números</div>
           <div class="sobre-stat">
-            <div class="sobre-stat-num">+10<span>años</span></div>
+            <div class="sobre-stat-num">+5<span>años</span></div>
             <div class="sobre-stat-label">en desarrollo web</div>
           </div>
           <div class="sobre-stat">
@@ -605,48 +606,40 @@
               <div class="contacto-link-val">Escribime directo</div>
             </div>
           </a>
-          <a href="https://linkedin.com/in/filgueira" target="_blank" class="contacto-link reveal">
-            <div class="contacto-link-icon">
-              <svg fill="#E24B4A" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            </div>
-            <div>
-              <div class="contacto-link-label">LinkedIn</div>
-              <div class="contacto-link-val">@filgueira.dev</div>
-            </div>
-          </a>
         </div>
       </div>
 
       <div class="reveal">
-        <div class="contacto-form" id="contactForm">
+        <form class="contacto-form" id="contactForm">
           <div class="form-group">
             <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" placeholder="¿Cómo te llamás?" />
+            <input type="text" id="nombre" name="nombre" placeholder="¿Cómo te llamás?" data-fs-field />
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" placeholder="tu@email.com" />
+            <input type="email" id="email" name="email" placeholder="tu@email.com" data-fs-field />
           </div>
           <div class="form-group">
             <label for="mensaje">¿En qué puedo ayudarte?</label>
-            <textarea id="mensaje" placeholder="Contame de qué se trata el proyecto..."></textarea>
+            <textarea id="mensaje" name="mensaje" placeholder="Contame de qué se trata el proyecto..." data-fs-field></textarea>
           </div>
-          <button class="form-submit" onclick="handleSubmit()">Enviar mensaje →</button>
-          <div class="form-success" id="formSuccess">✓ Mensaje enviado. Te respondo en menos de 24hs.</div>
-        </div>
+          <button class="form-submit" type="submit" data-fs-submit-btn>Enviar mensaje →</button>
+          <div class="form-success" id="formSuccess" data-fs-success>✓ Mensaje enviado. Te respondo en menos de 24hs.</div>
+        </form>
       </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="height:36px;width:36px;flex-shrink:0;">
-        <polygon points="100,10 182,55 182,145 100,190 18,145 18,55" fill="#E24B4A"/>
-        <path d="M119.624 80.2H90.672V96.216H117.072V105.896H90.672V129.48H80.376V70.52H119.624Z" fill="#FFFFFF"/>
-      </svg>
-      <span style="font-size:15px;font-weight:500;color:var(--white);letter-spacing:-0.01em;">Filgueira<span style="color:var(--red);">.</span>dev</span>
-    </div>
+    <svg width="520" height="116" viewBox="0 0 520 116" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="56,8 98,32 98,80 56,104 14,80 14,32" fill="#E24B4A"/>
+      <path d="M66.258 45.65H51.124V54.022H64.924V59.082H51.124V71.41H45.742V40.59H66.258Z" fill="#FFFFFF"/>
+      <path d="M148.312 48.88H131.204V58.344H146.804V64.064H131.204V78H125.12V43.16H148.312Z" fill="#FFFFFF"/>
+      <path d="M322.512 71.24Q324.072 71.24 325.112 72.28Q326.152 73.32 326.152 74.88Q326.152 76.44 325.112 77.48Q324.072 78.52 322.512 78.52Q320.952 78.52 319.912 77.48Q318.872 76.44 318.872 74.88Q318.872 73.32 319.912 72.28Q320.952 71.24 322.512 71.24Z" fill="#E24B4A"/>
+      <path d="M349.552 43.16H355.272V68.64H349.552V65.26Q349.552 63.752 349.006 62.478Q348.46 61.204 347.524 60.268Q346.588 59.332 345.314 58.786Q344.04 58.24 342.532 58.24Q341.076 58.24 339.802 58.786Q338.528 59.332 337.566 60.268Q336.604 61.204 336.058 62.478Q335.512 63.752 335.512 65.26Q335.512 66.716 336.058 68.016Q336.604 69.316 337.566 70.252Q338.528 71.188 339.802 71.734Q341.076 72.28 342.532 72.28H355.272V78H342.532Q339.88 78 337.54 77.012Q335.2 76.024 333.484 74.308Q331.768 72.592 330.78 70.278Q329.792 67.964 329.792 65.26Q329.792 62.608 330.754 60.268Q331.716 57.928 333.354 56.212Q334.992 54.496 337.254 53.508Q339.516 52.52 342.064 52.52Q344.248 52.52 346.12 53.196Q347.992 53.872 349.552 55.068Z" fill="#E24B4A"/>
+      <path d="M393.544 53.04L400.72 70.2L407.896 53.04H414.136L403.268 78H398.172L387.304 53.04Z" fill="#E24B4A"/>
+    </svg>
     <div class="footer-copy">© 2026 Filgueira.dev · Buenos Aires</div>
     <div class="footer-links">
       <a href="mailto:hola@filgueira.dev">hola@filgueira.dev</a>
@@ -687,17 +680,10 @@
     }, { threshold: 0.12 });
     reveals.forEach(el => observer.observe(el));
 
-    // Form
-    function handleSubmit() {
-      const nombre = document.getElementById('nombre').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const mensaje = document.getElementById('mensaje').value.trim();
-      if (!nombre || !email || !mensaje) { alert('Completá todos los campos.'); return; }
-      // En producción: conectar con Resend/Formspree/EmailJS
-      document.getElementById('contactForm').style.opacity = '0.4';
-      document.getElementById('contactForm').style.pointerEvents = 'none';
-      document.getElementById('formSuccess').style.display = 'block';
-    }
+    // Form — Formspree Ajax SDK
+    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#contactForm', formId: 'xgodeogz' });
   </script>
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
